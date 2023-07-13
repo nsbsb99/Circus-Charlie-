@@ -26,6 +26,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //게임 매니저에서 게임오버 여부를 호출
+        if(GameManager.instance.isGameOver == true)
+        {
+            isDead = true;
+        }
+
         //사망 시 종료
         if(isDead == true)
         {
@@ -63,5 +69,26 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionExit2D(Collision2D collision)
     {
         isGrounded = false;
+    }
+
+    private void Die()
+    {
+        animator.SetTrigger("Die");
+
+        playerRigid.velocity = Vector2.zero;
+        isDead = true;
+
+        //게임매니저가 GameOverUI 출력
+        GameManager.instance.OnplayerDead();
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //만약 불에 닿았고 아직 죽지 않았다면
+        if(other.tag == "Fire" && isDead == false)
+        {
+            //플레이어 체력 깎기.
+        }
     }
 }

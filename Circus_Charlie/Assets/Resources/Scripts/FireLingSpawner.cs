@@ -33,6 +33,7 @@ public class FireLingSpawner : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
+            //링을 풀에 저장
             fireLings[i] = Instantiate(fireLingPrefab, poolPosition, Quaternion.identity);
         }
 
@@ -43,7 +44,7 @@ public class FireLingSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (lastSpawnTime + timeBetSpawn <= Time.time)
+        if (lastSpawnTime + timeBetSpawn <= Time.time && GameManager.instance.isGameOver == false)
         {
             lastSpawnTime = Time.time;
             timeBetSpawn = UnityEngine.Random.Range(timeBetSpawnMin, timeBetSpawnMax);
@@ -54,6 +55,7 @@ public class FireLingSpawner : MonoBehaviour
             fireLings[currentIndex].SetActive(false);
             fireLings[currentIndex].SetActive(true);
 
+            //재이동을 위해 링을 뒤로 밀기
             fireLings[currentIndex].transform.position = new Vector2(xPos, 0f);
             currentIndex += 1;
 

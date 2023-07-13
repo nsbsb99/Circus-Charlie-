@@ -10,9 +10,12 @@ public class ScrollingBackground : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //백그라운드 왼쪽 이동 
-        transform.Translate(Vector2.left * speed * Time.deltaTime);
+        if (GameManager.instance.isGameOver == false)
+        {
+            //백그라운드 왼쪽 이동 
+            transform.Translate(Vector2.left * speed * Time.deltaTime);
 
-        //GameManager 생성 후 화면 뒤로 감기 만들기.
+            //GameManager 생성 후 화면 뒤로 감기 만들기.
+        }
     }
 }
