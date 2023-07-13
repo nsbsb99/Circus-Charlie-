@@ -11,7 +11,7 @@ public class FireLingSpawner : MonoBehaviour
     //불꽃링 프리팹으로 집어넣기
     public GameObject fireLingPrefab;
     //링 번갈아 사용
-    public int count = 6;
+    private int count = 2;
     //생성 시간
     public float timeBetSpawnMin = 4.0f;
     public float timeBetSpawnMax = 5.5f;
