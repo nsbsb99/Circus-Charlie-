@@ -1,18 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    public bool isGameOver = false;
-    public Text scoreText;
     //게임 오버 시 내보낼 UI
-    public GameObject gameoverUI;
+    public GameObject gameOverUI;
+    //출력 UI 텍스트 지정
+    public TMP_Text bonusScoreText;
+    public TMP_Text stageText;
 
-    private int score = 0;
+    private int bonusScore = 5000;
+    private float timer = 0f;
 
     private void Awake()
     {
@@ -28,28 +34,44 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("이미 게임매니저가 존재합니다!");
             Destroy(gameObject);
         }
+
+        Debug.Assert(GameManager.instance != null);
+
+        //스테이지별 텍스트 출력
+        if(SceneManager.GetActiveScene().name == "Scene_One")
+        {
+            stageText.text = "STAGE-0" + 1;
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        //게임 오버를 체크하고 다음 게임을 시작할 수 있도록 하는 처리 
+        //타이머를 만들어 1초마다 
+        timer += Time.deltaTime;
+
+        if(timer >= 1f)
+        {
+            timer -= 1f;
+            AddScore();
+        }
     }
 
-    public void AddScore(int newScore)
+
+    public void AddScore()
     {
-        if(!isGameOver)
+        //1초당 Bonus Score 10 삭감
+        if(PlayerController.isDead == false)
         {
-            score += newScore;
-            scoreText.text = "-" + score;
+            bonusScore -= 10;
+   
+            bonusScoreText.text = "-" + bonusScore;
         }
     }
 
     public void OnplayerDead()
     {
-        isGameOver = true;
-        gameoverUI.SetActive(true);
+        gameOverUI.SetActive(true);
     }
-
-
 }

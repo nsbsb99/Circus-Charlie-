@@ -1,17 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
     private Rigidbody2D playerRigid = default;
-    private float jumpForce = 370f;
+    private float jumpForce = 350f;
     private int jumpCount = 0;
     private bool isGrounded = false;
-    private bool isDead = false;
+    public static bool isDead = false;
     private Animator animator;
+    public static int playerHP = 4;
 
     // Start is called before the first frame update
     void Start()
@@ -21,22 +23,23 @@ public class PlayerController : MonoBehaviour
         
         Debug.Assert(playerRigid != null);
         Debug.Assert(animator != null);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        //게임 매니저에서 게임오버 여부를 호출
-        if(GameManager.instance.isGameOver == true)
-        {
-            isDead = true;
-        }
-
-        //사망 시 종료
+        //플레이어 죽음시 스크립트 종료
         if(isDead == true)
         {
             return;
         }
+
+        //플레이어가 화면 밖으로 밀려날 시 죽음 처리
+        //if(transform.position.x > -4)
+        //{
+        //    isDead = true;
+        //}
 
         //점프를 위한 코드 
         if (Input.GetMouseButtonDown(0) && jumpCount < 1)
@@ -71,24 +74,40 @@ public class PlayerController : MonoBehaviour
         isGrounded = false;
     }
 
-    private void Die()
-    {
-        animator.SetTrigger("Die");
-
-        playerRigid.velocity = Vector2.zero;
-        isDead = true;
-
-        //게임매니저가 GameOverUI 출력
-        GameManager.instance.OnplayerDead();
-
-    }
-
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         //만약 불에 닿았고 아직 죽지 않았다면
         if(other.tag == "Fire" && isDead == false)
         {
-            //플레이어 체력 깎기.
+            //플레이어 HP 하나 깎기
+            playerHP--;
+       
+            FindObjectOfType<WhatPlayerHP>().RemovePlayerHP();
+        }
+
+        //HP가 0이하라면 죽음 전달
+        if(playerHP <=0)
+        {
+            isDead = true;
+            Die();
         }
     }
+
+    private void Die()
+    {
+        //플레이어 정지
+        if (isDead == true)
+        {
+            animator.SetTrigger("Die");
+
+            playerRigid.velocity = Vector2.zero;
+
+           
+            //게임매니저에 플레이어의 게임오버 전달
+            GameManager.instance.OnplayerDead(); //NullReferenceException 오류
+            //2. FindObjectOfType<GameManager>().OnplayerDead();  
+        }
+
+    }
+
 }

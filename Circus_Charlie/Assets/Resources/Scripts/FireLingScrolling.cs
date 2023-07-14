@@ -9,13 +9,13 @@ public class FireLingScrolling : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+     
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.instance.isGameOver == false)
+        if (PlayerController.isDead == false)
         {
             transform.Translate(Vector2.left * speed * Time.deltaTime);
         }

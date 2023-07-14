@@ -17,7 +17,7 @@ public class BackgroundLoop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      if(transform.position.x <= -(width * 1.5))
+      if(transform.position.x <= -(width * 1.5) && PlayerController.isDead == false)
         {
             //Debug.Log("백그라운드 한계 초과");
 
