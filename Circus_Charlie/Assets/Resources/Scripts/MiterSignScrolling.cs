@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MiterSignScrolling : MonoBehaviour
 {
-    private float speed = 3.1f;
+    private float speed = 3f;
 
     // Update is called once per frame
     void Update()

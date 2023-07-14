@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public static bool isDead = false;
     private Animator animator;
     public static int playerHP = 4;
+    private bool playerNotHere = false;
 
     // Start is called before the first frame update
     void Start()
@@ -36,10 +37,11 @@ public class PlayerController : MonoBehaviour
         }
 
         //플레이어가 화면 밖으로 밀려날 시 죽음 처리
-        //if(transform.position.x > -4)
-        //{
-        //    isDead = true;
-        //}
+        if (this.transform.position.x < -8)
+        {
+            playerNotHere = true;
+            Die();
+        }
 
         //점프를 위한 코드 
         if (Input.GetMouseButtonDown(0) && jumpCount < 1)
@@ -85,6 +87,13 @@ public class PlayerController : MonoBehaviour
             FindObjectOfType<WhatPlayerHP>().RemovePlayerHP();
         }
 
+        //만약 불을 건너뛰었고 아직 죽지 않았다면
+        if(other.tag == "Score" && isDead == false)
+        {
+            //점수 200점 획득
+            GameManager.playerScore += 200;
+        }
+
         //HP가 0이하라면 죽음 전달
         if(playerHP <=0)
         {
@@ -95,7 +104,12 @@ public class PlayerController : MonoBehaviour
 
     private void Die()
     {
-        //플레이어 정지
+        if(playerNotHere == true)
+        {
+            isDead = true;
+        }
+
+        //플레이어의 HP가 0이거나 카메라 밖으로 벗어났다면
         if (isDead == true)
         {
             animator.SetTrigger("Die");

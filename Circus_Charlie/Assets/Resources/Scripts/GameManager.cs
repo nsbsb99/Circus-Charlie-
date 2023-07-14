@@ -10,12 +10,14 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    public static int playerScore = 0;
 
     //게임 오버 시 내보낼 UI
     public GameObject gameOverUI;
     //출력 UI 텍스트 지정
     public TMP_Text bonusScoreText;
     public TMP_Text stageText;
+    public TMP_Text scoreNumberText;
 
     private int bonusScore = 5000;
     private float timer = 0f;
@@ -54,20 +56,22 @@ public class GameManager : MonoBehaviour
         if(timer >= 1f)
         {
             timer -= 1f;
-            AddScore();
+            BonusScore();
         }
+        string whatScore = playerScore.ToString("D6");
+        scoreNumberText.text = "-" + whatScore;
     }
 
 
-    public void AddScore()
-    {
-        //1초당 Bonus Score 10 삭감
+    public void BonusScore()
+    {  
         if(PlayerController.isDead == false)
         {
+            //1초당 Bonus Score 10 삭감
             bonusScore -= 10;
-   
             bonusScoreText.text = "-" + bonusScore;
         }
+
     }
 
     public void OnplayerDead()
