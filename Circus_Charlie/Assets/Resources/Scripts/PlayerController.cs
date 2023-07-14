@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public static bool isDead = false;
     private Animator animator;
     public static int playerHP = 4;
+    //플레이어가 밀려나면 죽음 처리
     private bool playerNotHere = false;
 
     // Start is called before the first frame update

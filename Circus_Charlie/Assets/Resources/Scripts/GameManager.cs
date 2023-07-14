@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public static int playerScore = 0;
+    public static bool clickRight = false;
 
     //게임 오버 시 내보낼 UI
     public GameObject gameOverUI;
@@ -50,7 +51,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //타이머를 만들어 1초마다 
+        //타이머를 만들어 1초마다 보너스 스코어 깎기
         timer += Time.deltaTime;
 
         if(timer >= 1f)
@@ -60,6 +61,18 @@ public class GameManager : MonoBehaviour
         }
         string whatScore = playerScore.ToString("D6");
         scoreNumberText.text = "-" + whatScore;
+
+        //빠꾸 실행시
+        if(Input.GetMouseButton(1)) 
+        {
+            clickRight = true;
+        }
+
+        //전진시
+        if(!Input.GetMouseButton(1))
+        {
+            clickRight=false;
+        }       
     }
 
 

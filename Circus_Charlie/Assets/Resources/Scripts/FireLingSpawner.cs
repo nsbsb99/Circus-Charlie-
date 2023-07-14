@@ -44,7 +44,8 @@ public class FireLingSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (lastSpawnTime + timeBetSpawn <= Time.time && PlayerController.isDead == false)
+        if (lastSpawnTime + timeBetSpawn <= Time.time && PlayerController.isDead == false
+            && GameManager.clickRight == false)
         {
             lastSpawnTime = Time.time;
             timeBetSpawn = UnityEngine.Random.Range(timeBetSpawnMin, timeBetSpawnMax);

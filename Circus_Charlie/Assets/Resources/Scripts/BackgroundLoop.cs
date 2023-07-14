@@ -27,7 +27,7 @@ public class BackgroundLoop : MonoBehaviour
 
     private void Reposition()
     {
-        Vector2 offset = new Vector2 (width * 3f, 0);
+        Vector2 offset = new Vector2 (width * 4f, 0);
         //transform.position은 Vector3 형식이라 Vector2로의 형변환이 필요하다.
         transform.position = (Vector2) transform.position + offset;
     }
