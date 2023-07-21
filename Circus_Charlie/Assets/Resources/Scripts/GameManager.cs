@@ -10,8 +10,13 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    //왼쪽 상단 플레이어 스코어
     public static int playerScore = 0;
+    //플레이어를 뒤로 이동시키는지 확인
     public static bool clickRight = false;
+    //배경 루프 수를 따져 miter 구하기
+    public static int loopNumber = 0;
+
 
     //게임 오버 시 내보낼 UI
     public GameObject gameOverUI;
@@ -25,6 +30,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        //오류 목록
+        Debug.Log("BackgroundLoop 수정 필요");
+
         //게임매니저 배정
         if (instance == null)
         {

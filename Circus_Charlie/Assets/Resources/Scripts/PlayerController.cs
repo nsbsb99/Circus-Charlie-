@@ -17,22 +17,37 @@ public class PlayerController : MonoBehaviour
     //플레이어가 밀려나면 죽음 처리
     private bool playerNotHere = false;
 
+    [HideInInspector] public float goalDistance = default;
+
     // Start is called before the first frame update
     void Start()
     {
         playerRigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        
+
+        StartCoroutine("FirstLast");
+
         Debug.Assert(playerRigid != null);
         Debug.Assert(animator != null);
+
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        //골 지점까지의 거리 계산 
+        goalDistance = Vector2.Distance(transform.position, GameObject.Find("LastPlatform").transform.position);
+
+        //골이 있는 백그라운드로 진입 
+        if (goalDistance <= 8)
+        {
+            Debug.Log("거리 감지 성공");
+            GotGoal();
+        }
+
         //플레이어 죽음시 스크립트 종료
-        if(isDead == true)
+        if (isDead == true)
         {
             return;
         }
@@ -59,6 +74,8 @@ public class PlayerController : MonoBehaviour
 
         //땅에 닿아 있지 않음을 알려 점프 상태로 변경 
         animator.SetBool("Grounded", isGrounded);
+
+        Debug.LogFormat("골 지점까지의 거리: {0}", goalDistance);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -80,32 +97,37 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         //만약 불에 닿았고 아직 죽지 않았다면
-        if(other.tag == "Fire" && isDead == false)
+        if (other.tag == "Fire" && isDead == false)
         {
             //플레이어 HP 하나 깎기
             playerHP--;
-       
+
             FindObjectOfType<WhatPlayerHP>().RemovePlayerHP();
         }
 
         //만약 불을 건너뛰었고 아직 죽지 않았다면
-        if(other.tag == "Score" && isDead == false)
+        if (other.tag == "Score" && isDead == false)
         {
             //점수 200점 획득
             GameManager.playerScore += 200;
         }
 
         //HP가 0이하라면 죽음 전달
-        if(playerHP <=0)
+        if (playerHP <= 0)
         {
             isDead = true;
             Die();
         }
     }
 
+    private void GotGoal()
+    {
+        Time.timeScale = 0;
+    }
+
     private void Die()
     {
-        if(playerNotHere == true)
+        if (playerNotHere == true)
         {
             isDead = true;
         }
@@ -117,7 +139,7 @@ public class PlayerController : MonoBehaviour
 
             playerRigid.velocity = Vector2.zero;
 
-           
+
             //게임매니저에 플레이어의 게임오버 전달
             GameManager.instance.OnplayerDead(); //NullReferenceException 오류
             //2. FindObjectOfType<GameManager>().OnplayerDead();  
