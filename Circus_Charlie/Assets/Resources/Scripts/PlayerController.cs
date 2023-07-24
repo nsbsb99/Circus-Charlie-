@@ -24,6 +24,10 @@ public class PlayerController : MonoBehaviour
     private bool playerNotHere = false;
     //골 지점 통과 여부
     [HideInInspector] public static bool gotGoal = false;
+    //마지막 백그라운드 도달 여부
+    private bool finishGoal = false;
+    //시간 정지까지의 시간
+    private float stopTime = 0f;
 
     private float speed = 2.5f;
     #endregion
@@ -56,9 +60,14 @@ public class PlayerController : MonoBehaviour
 
         //마지막 백그라운드에 도달 시 
         //오른쪽으로 이동 
-        if (GameManager.instance.lastGoal == true && transform.position.x < 236)
+        if (GameManager.instance.lastGoal == true && transform.localPosition.x < 230)
         {
             transform.Translate(Vector2.right * speed * Time.deltaTime);
+        }
+        //골에 도달한지 3초가 지났다면
+        if(finishGoal == true && stopTime >= 3f)
+        {
+            GameManager.instance.GotGoal();
         }
 
         //점프를 위한 코드 
@@ -91,8 +100,11 @@ public class PlayerController : MonoBehaviour
         //아직 살아있고 골에 다다랐다면 다음 스테이지로
         if (isDead == false && collision.transform.tag == "Goal")
         {
-            Debug.Log("골대와 충돌 감지");
+            stopTime += Time.deltaTime;
+
             gotGoal = true;
+            finishGoal = true;
+            animator.SetBool("Goal", finishGoal);
 
         }
     }
