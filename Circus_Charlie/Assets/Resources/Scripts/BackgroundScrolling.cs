@@ -10,16 +10,17 @@ public class BackgroundScrolling : MonoBehaviour
     // Update is called once per frame
     public void Update()
     {
-        if (PlayerController.isDead == false && GameManager.clickRight == false)
+        if (PlayerController.isDead == false && GameManager.clickRight == false
+            && GameManager.instance.lastGoal == false)
         {
             //백그라운드 왼쪽 이동 
             transform.Translate(Vector2.left * speed * Time.deltaTime);
-
-            //GameManager 생성 후 화면 뒤로 감기 만들기.
         }
 
-        if(PlayerController.isDead == false && GameManager.clickRight == true)
+        if(PlayerController.isDead == false && GameManager.clickRight == true
+            && GameManager.instance.lastGoal == false)
         {
+            //만약 마우스 오른쪽 버튼을 누른다면 화면 다시 감기
             WantBack();
         }
     }

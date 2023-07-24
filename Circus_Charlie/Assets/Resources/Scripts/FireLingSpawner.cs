@@ -33,7 +33,7 @@ public class FireLingSpawner : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            //링을 풀에 저장
+            //count만큼의 링을 풀에 저장
             fireLings[i] = Instantiate(fireLingPrefab, poolPosition, Quaternion.identity);
         }
 
@@ -45,7 +45,7 @@ public class FireLingSpawner : MonoBehaviour
     void Update()
     {
         if (lastSpawnTime + timeBetSpawn <= Time.time && PlayerController.isDead == false
-            && GameManager.clickRight == false)
+            && GameManager.clickRight == false && GameObject.Find("background_10").transform.position.x > 0 )
         {
             lastSpawnTime = Time.time;
             timeBetSpawn = UnityEngine.Random.Range(timeBetSpawnMin, timeBetSpawnMax);

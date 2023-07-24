@@ -28,11 +28,10 @@ public class GameManager : MonoBehaviour
     private int bonusScore = 5000;
     private float timer = 0f;
 
+    [HideInInspector] public bool lastGoal = false;
+
     private void Awake()
     {
-        //오류 목록
-        Debug.Log("BackgroundLoop 수정 필요");
-
         //게임매니저 배정
         if (instance == null)
         {
@@ -48,17 +47,27 @@ public class GameManager : MonoBehaviour
 
         Debug.Assert(GameManager.instance != null);
 
+
+    }
+
+    private void Start()
+    {
         //스테이지별 텍스트 출력
         if(SceneManager.GetActiveScene().name == "Scene_One")
         {
             stageText.text = "STAGE-0" + 1;
         }
-
     }
 
     // Update is called once per frame
     void Update()
     {
+        //마지막 백그라운드 도달 시 
+        if(GameObject.Find("LastGoal").transform.position.x <= 0)
+        {
+            lastGoal = true;
+        }
+
         //타이머를 만들어 1초마다 보너스 스코어 깎기
         timer += Time.deltaTime;
 
@@ -67,6 +76,7 @@ public class GameManager : MonoBehaviour
             timer -= 1f;
             BonusScore();
         }
+
         string whatScore = playerScore.ToString("D6");
         scoreNumberText.text = "-" + whatScore;
 
@@ -80,7 +90,13 @@ public class GameManager : MonoBehaviour
         if(!Input.GetMouseButton(1))
         {
             clickRight=false;
-        }       
+        }
+        
+        //만약 플레이어가 마지막 백그라운드의 원통을 밟는다면 
+        if(PlayerController.gotGoal == true)
+        {
+            Time.timeScale = 0f; //모든 것을 정지 
+        }
     }
 
 

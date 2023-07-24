@@ -2,22 +2,31 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    #region 전역 변수 모음
+    //물리 변수
     private Rigidbody2D playerRigid = default;
     private float jumpForce = 350f;
     private int jumpCount = 0;
     private bool isGrounded = false;
+    //죽음 판정
     public static bool isDead = false;
+    //애니메이션
     private Animator animator;
+    //플레이어HP
     public static int playerHP = 4;
     //플레이어가 밀려나면 죽음 처리
     private bool playerNotHere = false;
+    //골 지점 통과 여부
+    [HideInInspector] public static bool gotGoal = false;
 
-    [HideInInspector] public float goalDistance = default;
+    private float speed = 2.5f;
+    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -25,27 +34,13 @@ public class PlayerController : MonoBehaviour
         playerRigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-        StartCoroutine("FirstLast");
-
         Debug.Assert(playerRigid != null);
         Debug.Assert(animator != null);
-
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        //골 지점까지의 거리 계산 
-        goalDistance = Vector2.Distance(transform.position, GameObject.Find("LastPlatform").transform.position);
-
-        //골이 있는 백그라운드로 진입 
-        if (goalDistance <= 8)
-        {
-            Debug.Log("거리 감지 성공");
-            GotGoal();
-        }
-
         //플레이어 죽음시 스크립트 종료
         if (isDead == true)
         {
@@ -57,6 +52,13 @@ public class PlayerController : MonoBehaviour
         {
             playerNotHere = true;
             Die();
+        }
+
+        //마지막 백그라운드에 도달 시 
+        //오른쪽으로 이동 
+        if (GameManager.instance.lastGoal == true && transform.position.x < 236)
+        {
+            transform.Translate(Vector2.right * speed * Time.deltaTime);
         }
 
         //점프를 위한 코드 
@@ -74,8 +76,6 @@ public class PlayerController : MonoBehaviour
 
         //땅에 닿아 있지 않음을 알려 점프 상태로 변경 
         animator.SetBool("Grounded", isGrounded);
-
-        Debug.LogFormat("골 지점까지의 거리: {0}", goalDistance);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -86,6 +86,14 @@ public class PlayerController : MonoBehaviour
             //땅에 다시 붙으면 땅에 닿았음을 알리고 점프카운트 초기화
             isGrounded = true;
             jumpCount = 0;
+        }
+
+        //아직 살아있고 골에 다다랐다면 다음 스테이지로
+        if (isDead == false && collision.transform.tag == "Goal")
+        {
+            Debug.Log("골대와 충돌 감지");
+            gotGoal = true;
+
         }
     }
 
@@ -120,11 +128,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void GotGoal()
-    {
-        Time.timeScale = 0;
-    }
-
     private void Die()
     {
         if (playerNotHere == true)
@@ -139,10 +142,8 @@ public class PlayerController : MonoBehaviour
 
             playerRigid.velocity = Vector2.zero;
 
-
             //게임매니저에 플레이어의 게임오버 전달
-            GameManager.instance.OnplayerDead(); //NullReferenceException 오류
-            //2. FindObjectOfType<GameManager>().OnplayerDead();  
+            GameManager.instance.OnplayerDead();
         }
 
     }
